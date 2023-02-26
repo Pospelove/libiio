@@ -1,3 +1,20 @@
+# it doesn't make sense to create man pages on windows, so we don't really
+# worry about that.
+
+macro(gen_man_page _page)
+	if (EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/${_page}.1.in)
+		execute_process(
+			COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/make_util_pages.sh
+			${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/${_page}.1.in
+			OUTPUT_FILE ${CMAKE_CURRENT_BINARY_DIR}/${_page}.1.in
+		)
+		configure_file(
+			${CMAKE_CURRENT_BINARY_DIR}/${_page}.1.in
+			${CMAKE_BINARY_DIR}/${CMAKE_INSTALL_MANDIR}/${_page}.1 @ONLY
+		)
+	endif()
+endmacro()
+
 if (WITH_MAN)
 	find_program(BASH_EXECUTABLE bash)
 	find_program(DATE_EXECUTABLE date)
@@ -36,8 +53,7 @@ if (WITH_MAN)
 	if (WITH_TESTS)
 		list(APPEND MAN1 iio_attr.1 iio_info.1 iio_readdev.1 iio_reg.1 iio_writedev.1)
 		foreach(_page ${MAN1})
-			configure_file( ${CMAKE_CURRENT_SOURCE_DIR}/${_page}.in
-				${CMAKE_BINARY_DIR}/${CMAKE_INSTALL_MANDIR}/${_page} @ONLY)
+			gen_man_page(${_page})
 		endforeach()
 		if (WITH_DOC)
 			file(MAKE_DIRECTORY ${CMAKE_HTML_DEST_DIR}/man1)
