@@ -16,7 +16,6 @@ macro(gen_man_page _page)
 endmacro()
 
 if (WITH_MAN)
-	find_program(BASH_EXECUTABLE bash)
 	find_program(DATE_EXECUTABLE date)
 	if (DEFINED ENV{SOURCE_DATE_EPOCH})
 		execute_process(
@@ -31,10 +30,12 @@ if (WITH_MAN)
 		${CMAKE_CURRENT_SOURCE_DIR}/make_man.sh.in
 		${CMAKE_CURRENT_BINARY_DIR}/make_man.sh @ONLY)
 	execute_process(
-		COMMAND ${BASH_EXECUTABLE} "-c" "${CMAKE_CURRENT_BINARY_DIR}/make_man.sh > ${CMAKE_BINARY_DIR}/libiio.3.in"
-		)
+		COMMAND ${CMAKE_CURRENT_BINARY_DIR}/make_man.sh
+		OUTPUT_FILE ${CMAKE_CURRENT_BINARY_DIR}/libiio.3.in
+	)
+
 	configure_file(
-		${CMAKE_BINARY_DIR}/libiio.3.in
+		${CMAKE_CURRENT_BINARY_DIR}/libiio.3.in
 		${CMAKE_BINARY_DIR}/${CMAKE_INSTALL_MANDIR}/libiio.3 @ONLY)
 
 	if (WITH_DOC)
