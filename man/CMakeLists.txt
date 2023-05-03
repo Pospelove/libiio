@@ -52,10 +52,10 @@ if (WITH_MAN)
 		)
 	endif()
 	if (WITH_TESTS)
-		list(APPEND MAN1 iio_attr.1 iio_info.1 iio_readdev.1 iio_reg.1 iio_writedev.1)
-		foreach(_page ${MAN1})
+		foreach(_page ${IIO_TESTS_TARGETS})
 			gen_man_page(${_page})
 		endforeach()
+
 		if (WITH_DOC)
 			file(MAKE_DIRECTORY ${CMAKE_HTML_DEST_DIR}/man1)
 			foreach(_page ${MAN1})
@@ -67,6 +67,11 @@ if (WITH_MAN)
 			endforeach()
 		endif()
 	endif()
+
+	if (WITH_IIOD)
+		gen_man_page(iiod)
+	endif()
+
 	# install man files into the BINARY directories,
 	# section 3 = library functions
 	install(DIRECTORY ${CMAKE_BINARY_DIR}/${CMAKE_INSTALL_MANDIR}
